@@ -1,0 +1,17 @@
+.card{
+    border: 1px solid grey;
+    margin-bottom: 10px;
+}
+.t-name{
+    font-weight: 500;
+}
+.name{
+    margin-left: 10px;
+}
+.table-wrap{
+    display: flex;
+    justify-content: space-between;
+}
+.finish-button {
+    margin: 15px;
+}

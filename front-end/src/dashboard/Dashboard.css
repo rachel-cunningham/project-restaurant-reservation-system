@@ -1,0 +1,28 @@
+.formatTable {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+ 
+table {
+    border: 2px solid navy;
+    width: 800px;
+    height: 200px;
+}
+ 
+th {
+    border-bottom: 1px solid black;
+    text-align: center;
+}
+ 
+td {
+    text-align: center;
+}
+.res-col{
+    width: 60%;
+}
+.table-col{
+    width: 40%;
+}
