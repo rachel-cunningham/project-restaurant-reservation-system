@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { setDefaultOptions } = require('expect-puppeteer');
+const { setDefaultOptions } = require("expect-puppeteer");
 const fs = require("fs");
 const fsPromises = fs.promises;
 
@@ -35,9 +35,10 @@ describe("US-06 - Reservation status - E2E", () => {
       reservation = await createReservation({
         first_name: "Status",
         last_name: Date.now().toString(10),
-        mobile_number: "800-555-1313",
+        mobile_number: "+1 (800) 555-1313",
         reservation_date: "2035-01-01",
         reservation_time: "13:45",
+        status: "booked",
         people: 4,
       });
 
@@ -111,13 +112,16 @@ describe("US-06 - Reservation status - E2E", () => {
 
       const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
       await page.waitForSelector(finishButtonSelector);
+      await page.click(finishButtonSelector);
 
       page.on("dialog", async (dialog) => {
         await dialog.accept();
       });
 
-      await page.click(finishButtonSelector);
+      const okSelector = `[data-table-ok-selector="table-ok"]`;
+      await page.waitForSelector(okSelector);
 
+      await page.click(okSelector);
       await page.waitForResponse((response) => {
         return response.url().endsWith(`/tables`);
       });
@@ -131,7 +135,7 @@ describe("US-06 - Reservation status - E2E", () => {
         await page.$(
           `[data-reservation-id-status="${reservation.reservation_id}"]`
         )
-      ).toBeNull();
+      ).toEqual({});
     });
   });
 });

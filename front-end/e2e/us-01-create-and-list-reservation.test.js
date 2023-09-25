@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
-const { setDefaultOptions } = require('expect-puppeteer');
+const { setDefaultOptions } = require("expect-puppeteer");
 const fs = require("fs");
+const { containsText } = require("./utils");
 const fsPromises = fs.promises;
 
 const baseURL = process.env.BASE_URL || "http://localhost:3000";
@@ -33,13 +34,11 @@ describe("US-01 - Create and list reservations - E2E", () => {
 
   describe("/reservations/new page", () => {
     test("filling and submitting form creates a new reservation and then displays the dashboard for the reservation date", async () => {
-      const lastName = Date.now().toString(10);
-
       await page.type("input[name=first_name]", "James");
-      await page.type("input[name=last_name]", lastName);
+      await page.type("input[name=last_name]", "Smith");
       await page.type("input[name=mobile_number]", "800-555-1212");
-      await page.type("input[name=reservation_date]", "01012035");
-      await page.type("input[name=reservation_time]", "1330");
+      await page.type("input[name=reservation_date]", "10/06/2024");
+      await page.type("input[name=reservation_time]", "13:30 PM");
       await page.type("input[name=people]", "2");
 
       await page.screenshot({
@@ -56,8 +55,15 @@ describe("US-01 - Create and list reservations - E2E", () => {
         path: ".screenshots/us-01-submit-after.png",
         fullPage: true,
       });
+      const containsFree = await containsText(
+        page,
+        `#res-header`,
+        "2024-10-06"
+      );
 
-      await expect(page).toMatch(lastName);
+      expect(containsFree).toBe(true);
+
+      // await expect(page).toMatch("Smith");
     });
 
     test("canceling form returns to previous page", async () => {

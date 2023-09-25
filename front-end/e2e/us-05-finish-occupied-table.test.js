@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { setDefaultOptions } = require('expect-puppeteer');
+const { setDefaultOptions } = require("expect-puppeteer");
 const fs = require("fs");
 const fsPromises = fs.promises;
 
@@ -32,19 +32,19 @@ describe("US-05 - Finish an occupied table - E2E", () => {
     let table;
 
     beforeEach(async () => {
-      reservation = await createReservation({
-        first_name: "Finish",
-        last_name: Date.now().toString(10),
-        mobile_number: "800-555-1313",
-        reservation_date: "2035-01-01",
-        reservation_time: "13:45",
-        people: 4,
-      });
-
       table = await createTable({
         table_name: `#${Date.now().toString(10)}`,
         capacity: 99,
-        reservation_id: reservation.reservation_id,
+      });
+      reservation = await createReservation({
+        first_name: "Finish",
+        last_name: Date.now().toString(10),
+        mobile_number: "+1 (800) 555-1313",
+        reservation_date: "2035-01-01",
+        reservation_time: "13:45",
+        status: "booked",
+        people: 4,
+        table_id: table.table_id,
       });
 
       page = await browser.newPage();
@@ -73,15 +73,17 @@ describe("US-05 - Finish an occupied table - E2E", () => {
       const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
       await page.waitForSelector(finishButtonSelector);
 
+      await page.click(finishButtonSelector);
       page.on("dialog", async (dialog) => {
         expect(dialog.message()).toContain(
           "Is this table ready to seat new guests?"
         );
         await dialog.accept();
       });
+      const okSelector = `[data-table-ok-selector="table-ok"]`;
+      await page.waitForSelector(okSelector);
 
-      await page.click(finishButtonSelector);
-
+      await page.click(okSelector);
       await page.waitForResponse((response) => {
         return response.url().endsWith(`/tables`);
       });
@@ -125,6 +127,10 @@ describe("US-05 - Finish an occupied table - E2E", () => {
       });
 
       await page.click(finishButtonSelector);
+      const cancelSelector = `[data-table-cancel-selector="table-cancel"]`;
+      await page.waitForSelector(cancelSelector);
+
+      await page.click(cancelSelector);
 
       await page.waitForTimeout(1000);
 

@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { setDefaultOptions } = require('expect-puppeteer');
+const { setDefaultOptions } = require("expect-puppeteer");
 const fs = require("fs");
 const fsPromises = fs.promises;
 
@@ -29,9 +29,10 @@ describe("US-08 - Change an existing reservation - E2E", () => {
     reservation = await createReservation({
       first_name: "Change",
       last_name: Date.now().toString(10),
-      mobile_number: "800-555-1616",
+      mobile_number: "+1 (800) 555-1616",
       reservation_date: "2035-01-04",
       reservation_time: "14:00",
+      status: "booked",
       people: 4,
     });
     page = await browser.newPage();
@@ -61,8 +62,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
         await page.waitForSelector(hrefSelector);
 
         await page.screenshot({
-          path:
-            ".screenshots/us-08-dashboard-edit-click-after-no-change-expected.png",
+          path: ".screenshots/us-08-dashboard-edit-click-after-no-change-expected.png",
           fullPage: true,
         });
 
@@ -85,15 +85,21 @@ describe("US-08 - Change an existing reservation - E2E", () => {
             `Cancel button for reservation_id ${reservation.reservation_id} was not found.`
           );
         }
-
+        await cancelButton.click();
         page.on("dialog", async (dialog) => {
           expect(dialog.message()).toContain(
             "Do you want to cancel this reservation?"
           );
           await dialog.accept();
         });
+        await page.screenshot({
+          path: ".screenshots/us-08-cancel-dialog.png",
+          fullPage: true,
+        });
+        const okSelector = `[data-reservation-cancel-ok-selector="reservation-cancel-ok"]`;
+        await page.waitForSelector(okSelector);
 
-        await cancelButton.click();
+        await page.click(okSelector);
 
         await page.waitForResponse((response) => {
           return response.url().includes("/reservations?date=");
@@ -118,6 +124,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
         }
 
         page.on("dialog", async (dialog) => {
+          console.log("inside alert box!!");
           await dialog.dismiss();
         });
 
@@ -135,7 +142,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
 
   describe("/reservations/:reservation_id/edit page", () => {
     beforeEach(async () => {
-      await page.goto(`${baseURL}/dashboard`, {
+      await page.goto(dashboardTestPath, {
         waitUntil: "networkidle0",
       });
       await page.goto(

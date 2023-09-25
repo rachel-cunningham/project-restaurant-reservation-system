@@ -34,7 +34,6 @@ function TableNew() {
       .catch((err) => {
         setAddTableError(err.message);
       });
-    history.push(`/dashboard`);
   };
   const goBack = () => {
     history.goBack();
@@ -65,6 +64,11 @@ function TableNew() {
               label="Table Name"
               name="table_name"
               onChange={handleChange}
+              InputProps={{
+                inputProps: {
+                  min: 2,
+                },
+              }}
               fullWidth
               required
             />
@@ -77,7 +81,12 @@ function TableNew() {
               }}
               variant="standard"
               onChange={handleChange}
-              min="1"
+              InputProps={{
+                inputProps: {
+                  type: "number",
+                  min: 1,
+                },
+              }}
               name="capacity"
               placeholder="1"
               fullWidth

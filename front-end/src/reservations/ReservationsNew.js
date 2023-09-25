@@ -11,9 +11,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import resimage from "./../images/my-res.jpeg";
 import Alert from "@mui/material/Alert";
+
 function NewReservation() {
   const history = useHistory();
   const [reservationsError, setReservationsError] = useState(null);
@@ -38,7 +39,6 @@ function NewReservation() {
 
   const [formData, setFormData] = useState({ ...initialFormState });
   const handleChange = ({ target }) => {
-    console.log(target);
     if (target) {
       setFormData({
         ...formData,
@@ -59,7 +59,6 @@ function NewReservation() {
     });
   }
   function handleTime(value) {
-    console.log(dayjs(value).format("HH:mm"));
     setFormData({
       ...formData,
       reservation_time: dayjs(value).format("HH:mm"),
@@ -117,6 +116,7 @@ function NewReservation() {
           </Stack>
           <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
             <MuiPhoneNumber
+              name="mobile_number"
               defaultCountry={"us"}
               onChange={handlePhone}
               required
@@ -136,6 +136,7 @@ function NewReservation() {
                 slotProps={{
                   textField: {
                     helperText: "MM/DD/YYYY",
+                    name: "reservation_date",
                   },
                 }}
               />
@@ -144,11 +145,13 @@ function NewReservation() {
               <TimePicker
                 label="Reservation Time"
                 onChange={(newValue) => handleTime(newValue)}
+                slotProps={{ textField: { name: "reservation_time" } }}
               />
             </LocalizationProvider>
           </Stack>
           <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
             <TextField
+              name="people"
               id="people"
               label="Party Size"
               InputLabelProps={{
@@ -162,7 +165,6 @@ function NewReservation() {
                   min: 1,
                 },
               }}
-              name="people"
               placeholder="1"
               fullWidth
             />
@@ -176,7 +178,9 @@ function NewReservation() {
             </Button>
           </Stack>
           {reservationsError && (
-            <Alert severity="error">{reservationsError}</Alert>
+            <Alert className="alert alert-danger" severity="error">
+              {reservationsError}
+            </Alert>
           )}
         </form>
         <img src={resimage} alt="logo" />
