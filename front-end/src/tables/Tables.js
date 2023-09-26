@@ -16,19 +16,19 @@ export default function Tables() {
   const [open, setOpen] = React.useState(false);
   const [tableId, setTableId] = React.useState(null);
   const [cancelError, setCancelError] = useState(null);
-  function loadTables() {
+  async function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
-    listTables()
-      .then((resp) => {
+    try {
+      const resp = await listTables();
+      if (resp) {
         setTables(resp);
         setTablesError(null);
-      })
-      .catch((err) => {
-        setTables(null);
-        setTablesError(err.message);
-      });
-
+      }
+    } catch (err) {
+      setTables(null);
+      setTablesError(err.message);
+    }
     return () => abortController.abort();
   }
   useEffect(() => {
@@ -47,6 +47,7 @@ export default function Tables() {
       console.log(res);
       setOpen(false);
       loadTables();
+      window.location.reload(false);
     } catch (err) {
       setCancelError(err?.message);
     }
@@ -60,8 +61,8 @@ export default function Tables() {
         {Array.isArray(tables) &&
           tables.length > 0 &&
           tables.map((table) => (
-            <div className="card" id={table.table_id}>
-              <div className="table-wrap">
+            <div className="card" key={table.table_id}>
+              <div className="table-wrap" id={table.table_id}>
                 <div>
                   <div className="t-name name">
                     Table #{table.table_id} - {table.table_name}

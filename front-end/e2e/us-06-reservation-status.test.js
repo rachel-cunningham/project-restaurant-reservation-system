@@ -126,6 +126,8 @@ describe("US-06 - Reservation status - E2E", () => {
         return response.url().endsWith(`/tables`);
       });
 
+      await page.waitForSelector("#reservations");
+
       await page.screenshot({
         path: ".screenshots/us-06-finish-after.png",
         fullPage: true,
@@ -135,7 +137,7 @@ describe("US-06 - Reservation status - E2E", () => {
         await page.$(
           `[data-reservation-id-status="${reservation.reservation_id}"]`
         )
-      ).toEqual({});
+      ).toEqual(null);
     });
   });
 });

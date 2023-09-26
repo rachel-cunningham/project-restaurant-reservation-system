@@ -88,6 +88,8 @@ describe("US-05 - Finish an occupied table - E2E", () => {
         return response.url().endsWith(`/tables`);
       });
 
+      await page.waitForSelector("#reservations");
+
       await page.screenshot({
         path: ".screenshots/us-05-dashboard-finish-button-after.png",
         fullPage: true,

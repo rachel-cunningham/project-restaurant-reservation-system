@@ -27,13 +27,14 @@ function TableNew() {
     event.preventDefault();
     // const response = await TableNew(formData);
     formData.capacity = parseInt(formData.capacity);
-    createTable({ data: formData })
-      .then((resp) => {
+    try {
+      const resp = await createTable({ data: formData });
+      if (resp) {
         goToDashboard();
-      })
-      .catch((err) => {
-        setAddTableError(err.message);
-      });
+      }
+    } catch (err) {
+      setAddTableError(err.message);
+    }
   };
   const goBack = () => {
     history.goBack();

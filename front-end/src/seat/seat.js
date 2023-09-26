@@ -7,27 +7,28 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { listTables, reserveSeat, updateReservationStatus } from "../utils/api";
 import Alert from "@mui/material/Alert";
-import { useParams } from "react-router-dom";
-
+import { useParams, useLocation } from "react-router-dom";
 function Seat() {
   const history = useHistory();
   const [tables, setTables] = useState([]);
+  const location = useLocation();
   const [seatsError, setSeatsError] = useState(null);
+  const [reservation, setReservation] = useState(location.state);
   const [tableId, setTableId] = useState("");
   const uParam = useParams();
-  function loadTables() {
+  async function loadTables() {
     const abortController = new AbortController();
     setSeatsError(null);
-    listTables()
-      .then((resp) => {
+    try {
+      const resp = await listTables();
+      if (resp) {
         setTables(resp);
         setSeatsError(null);
-      })
-      .catch((err) => {
-        setTables(null);
-        setSeatsError(err.message);
-      });
-
+      }
+    } catch (err) {
+      setTables(null);
+      setSeatsError(err.message);
+    }
     return () => abortController.abort();
   }
   useEffect(() => {
@@ -43,14 +44,12 @@ function Seat() {
     const abortController = new AbortController();
     try {
       const result = await reserveSeat(uParam.reservation_id, tableId);
-      console.log(result);
       const res = await updateReservationStatus(
         uParam.reservation_id,
         "seated",
         abortController.signal
       );
-      console.log(res);
-      history.push(`/dashboard`);
+      history.push(`/dashboard?date=${reservation.reservation_date}`);
     } catch (err) {
       setSeatsError(err?.message);
       console.log(seatsError);
@@ -81,7 +80,7 @@ function Seat() {
             tables.length > 0 &&
             tables.map((table) => (
               <MenuItem
-                id={table.table_id}
+                key={table.table_id}
                 value={table.table_id}
                 name={table.table_id}
               >

@@ -24,29 +24,33 @@ export default function Reservations({ keyString, value }) {
   const handleClose = () => {
     setOpen(false);
   };
-  function loadDashboard() {
+  async function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
     const obj = {};
     obj[keyString] = value;
     if (value) {
-      listReservations(obj, abortController.signal)
-        .then((resp) => {
+      try {
+        const resp = await listReservations(obj, abortController.signal);
+        if (resp) {
           setReservations(resp);
           setReservationsError(null);
           if (resp.length === 0) {
             setReservationsError("No reservations found");
           }
-        })
-        .catch((err) => {
-          setReservations(null);
-          setReservationsError(err.message);
-        });
+        }
+      } catch (err) {
+        setReservations(null);
+        setReservationsError(err.message);
+      }
     }
     return () => abortController.abort();
   }
-  const markSeated = (reservation_id) => () => {
-    history.push(`/reservations/${reservation_id}/seat`);
+  const markSeated = (reservation) => () => {
+    history.push(
+      `/reservations/${reservation.reservation_id}/seat`,
+      reservation
+    );
   };
   const editReservation = (reservation) => () => {
     history.push(
@@ -81,7 +85,7 @@ export default function Reservations({ keyString, value }) {
         {Array.isArray(reservations) &&
           reservations.length > 0 &&
           reservations.map((reservation) => (
-            <div className="main-card" id={reservation.reservation_id}>
+            <div className="main-card" key={reservation.reservation_id}>
               <div className="card-res">
                 <div className="info">
                   <div className="name-wrapper">
@@ -115,7 +119,7 @@ export default function Reservations({ keyString, value }) {
                       href={
                         "/reservations/" + reservation.reservation_id + "/seat"
                       }
-                      onClick={markSeated(reservation.reservation_id)}
+                      onClick={markSeated(reservation)}
                     >
                       Seat
                     </Button>
