@@ -50,7 +50,7 @@ describe("US-01 - Create and list reservations - E2E", () => {
         page.click("[type=submit]"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
-
+      await page.waitForSelector("#reservations");
       await page.screenshot({
         path: ".screenshots/us-01-submit-after.png",
         fullPage: true,
@@ -62,8 +62,8 @@ describe("US-01 - Create and list reservations - E2E", () => {
       );
 
       expect(containsFree).toBe(true);
-
-      // await expect(page).toMatch("Smith");
+      const containsJohn = await containsText(page, `#reservations`, "james");
+      expect(containsJohn).toBe(true);
     });
 
     test("canceling form returns to previous page", async () => {

@@ -130,6 +130,7 @@ export default function Reservations({ keyString, value }) {
                         "/reservations/" + reservation.reservation_id + "/edit"
                       }
                       onClick={editReservation(reservation)}
+                      id={"edit_" + reservation.reservation_id}
                     >
                       Edit
                     </Button>

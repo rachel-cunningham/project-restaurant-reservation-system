@@ -4,6 +4,7 @@ const fs = require("fs");
 const fsPromises = fs.promises;
 
 const { createReservation } = require("./api");
+const { containsText } = require("./utils");
 
 const baseURL = process.env.BASE_URL || "http://localhost:3000";
 
@@ -145,15 +146,20 @@ describe("US-08 - Change an existing reservation - E2E", () => {
       await page.goto(dashboardTestPath, {
         waitUntil: "networkidle0",
       });
-      await page.goto(
-        `${baseURL}/reservations/${reservation.reservation_id}/edit`,
-        {
-          waitUntil: "networkidle0",
-        }
-      );
+      await page.screenshot({
+        path: ".screenshots/dashboard-landed.png",
+        fullPage: true,
+      });
+      await page.waitForSelector(`#edit_${reservation.reservation_id}`);
+      await page.click(`#edit_${reservation.reservation_id}`);
+      await page.screenshot({
+        path: ".screenshots/oneditpage.png",
+        fullPage: true,
+      });
     });
 
     test("canceling form returns to the previous page", async () => {
+      await page.waitForSelector("#cancel-edit");
       const [cancelButton] = await page.$x(
         "//button[contains(translate(., 'ACDEFGHIJKLMNOPQRSTUVWXYZ', 'acdefghijklmnopqrstuvwxyz'), 'cancel')]"
       );
@@ -181,6 +187,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
     });
 
     test("filling and submitting form updates the reservation", async () => {
+      await page.waitForSelector("#cancel-edit");
       const firstNameInput = await page.$("input[name=first_name]");
       await firstNameInput.click({ clickCount: 3 });
       await firstNameInput.type("John");
@@ -204,13 +211,13 @@ describe("US-08 - Change an existing reservation - E2E", () => {
       ]);
 
       expect(page.url()).toContain("/dashboard");
-
+      await page.waitForSelector("#reservations");
       await page.screenshot({
         path: ".screenshots/us-08-edit-reservation-submit-after.png",
         fullPage: true,
       });
-
-      await expect(page).toMatch(/John/);
+      const containsJohn = await containsText(page, `#reservations`, "john");
+      expect(containsJohn).toBe(true);
     });
   });
 });

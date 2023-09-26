@@ -68,6 +68,7 @@ function Seat() {
           labelId="demo-simple-select-helper-label"
           id="table-selector"
           value={tableId}
+          name="table_id"
           label="Select Table"
           onChange={handleChange}
           fullWidth

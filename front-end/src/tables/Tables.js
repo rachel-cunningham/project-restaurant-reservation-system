@@ -54,7 +54,7 @@ export default function Tables() {
     setOpen(false);
   }
   return (
-    <div>
+    <div id="table-section">
       {tablesError}
       <div>
         {Array.isArray(tables) &&

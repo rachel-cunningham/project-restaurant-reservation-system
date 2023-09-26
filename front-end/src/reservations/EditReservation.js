@@ -182,7 +182,12 @@ function EditReservation() {
             />
           </Stack>
           <Stack spacing={2} direction="row" justifyContent="flex-end">
-            <Button variant="outlined" onClick={goBack} size="large">
+            <Button
+              variant="outlined"
+              id="cancel-edit"
+              onClick={goBack}
+              size="large"
+            >
               Cancel
             </Button>
             <Button variant="contained" type="submit" size="large">
