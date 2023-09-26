@@ -116,9 +116,9 @@ export default function Reservations({ keyString, value }) {
                   {reservation.status?.toLowerCase() === "booked" && (
                     <Button
                       variant="contained"
-                      href={
-                        "/reservations/" + reservation.reservation_id + "/seat"
-                      }
+                      // href={
+                      //   "/reservations/" + reservation.reservation_id + "/seat"
+                      // }
                       onClick={markSeated(reservation)}
                     >
                       Seat
@@ -130,9 +130,9 @@ export default function Reservations({ keyString, value }) {
                   {reservation.status?.toLowerCase() === "booked" && (
                     <Button
                       variant="contained"
-                      href={
-                        "/reservations/" + reservation.reservation_id + "/edit"
-                      }
+                      // href={
+                      //   "/reservations/" + //reservation.reservation_id + "/edit"
+                      // }
                       onClick={editReservation(reservation)}
                       id={"edit_" + reservation.reservation_id}
                     >
