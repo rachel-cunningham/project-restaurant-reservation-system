@@ -47,7 +47,7 @@ describe("US-07 - Search reservations - E2E", () => {
           response.url().includes("mobile_number=")
         ),
       ]);
-
+      await page.waitForSelector("#reservations");
       await page.screenshot({
         path: ".screenshots/us-07-search-reservations-submit-valid-after.png",
         fullPage: true,
@@ -71,7 +71,7 @@ describe("US-07 - Search reservations - E2E", () => {
           response.url().includes("mobile_number=")
         ),
       ]);
-
+      await page.waitForSelector("#error-res");
       await page.screenshot({
         path: ".screenshots/us-07-search-reservations-submit-no-result-after.png",
         fullPage: true,

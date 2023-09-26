@@ -174,7 +174,7 @@ describe("US-04 - Seat reservation - E2E", () => {
         }
       );
       await page.screenshot({
-        path: ".screenshots/landedpage.png",
+        path: ".screenshots/us-04-seat-reservation-landedpage.png",
         fullPage: true,
       });
     });

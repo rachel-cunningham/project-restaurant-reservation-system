@@ -146,16 +146,8 @@ describe("US-08 - Change an existing reservation - E2E", () => {
       await page.goto(dashboardTestPath, {
         waitUntil: "networkidle0",
       });
-      await page.screenshot({
-        path: ".screenshots/dashboard-landed.png",
-        fullPage: true,
-      });
       await page.waitForSelector(`#edit_${reservation.reservation_id}`);
       await page.click(`#edit_${reservation.reservation_id}`);
-      await page.screenshot({
-        path: ".screenshots/oneditpage.png",
-        fullPage: true,
-      });
     });
 
     test("canceling form returns to the previous page", async () => {
