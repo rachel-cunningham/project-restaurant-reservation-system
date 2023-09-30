@@ -65,7 +65,7 @@ export default function Tables() {
               <div className="table-wrap" id={table.table_id}>
                 <div>
                   <div className="t-name name">
-                    Table #{table.table_id} - {table.table_name}
+                    Table {table.table_name}
                   </div>
                   <div className="name">Seats: {table.capacity}</div>
                   <div className="name" data-table-id-status={table.table_id}>
